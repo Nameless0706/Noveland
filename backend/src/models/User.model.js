@@ -1,42 +1,18 @@
-const db = require('../databases/Mysql');
+import mongoose from "mongoose";
 
+const userSchema = new mongoose.Schema(
+  {
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    roles: { type: [String], default: ["User"] },
+    avatar: { type: String, default: null },
+    firstname: { type: String, required: true },
+    lastname: { type: String, required: true },
+    date_of_birth: { type: Date, required: true },
+    about: { type: String, default: "" },
+  },
+  { timestamps: true }
+);
 
-const User = {
-
-    getAllUsers: async () => {
-       const query = `SELECT * FROM user`;
-       const [rows] = await db.query(query);
-       return rows; 
-    },
-
-    getUserByUsername: async (username) => {
-        const query = `SELECT * FROM user WHERE username = ? `;
-        const [rows] = await db.query(query, [username]);
-        return rows[0];
-    },
-
-    createUser: async (username, firstname, lastname, dob, createdAt, password, email) => {
-        const query = `INSERT INTO user (username, firstname, lastname, 
-                                    date_of_birth, created_at, password, email)
-                   VALUES(?,?,?,?,?,?,?)`;
-        const result = await db.query(query, [username, firstname, lastname, dob, createdAt, password, email]);
-        return result.insertId;
-    },
-
-    updateUser: async (username, firstname, lastname, dob, email) => {
-        const query = `UPDATE user SET firstname = ?, lastname = ?, date_of_birth = ?, email = ?
-                        WHERE username = ? `;
-        const result = await db.query(query, [firstname, lastname, dob, email, username]);
-        return result.affectedRows;
-    },
-
-    deleteUser: async (username) => {
-        const query = `DELETE FROM user WHERE username = ? `
-        const [result] = await db.query(query, [username]);
-        return result.affectedRows;
-    }
-}
-
-
-
-module.exports = User;
+export default mongoose.model("User", userSchema);

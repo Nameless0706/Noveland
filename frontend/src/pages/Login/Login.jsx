@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
+import { faGoogle } from "@fortawesome/free-brands-svg-icons";
 import styles from "./Login.module.css";
 
 
@@ -29,7 +30,11 @@ function Login(){
             console.error("Login error:", err);
             alert("An error occured!");
         });
-}
+    }
+
+    const handleGoogleLogin = () => {
+        window.location.href = "http://localhost:3000/auth/google";
+    };
 
 
     return (
@@ -43,6 +48,7 @@ function Login(){
                         <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username"  required /> 
                         <FontAwesomeIcon icon={faUser} className={styles["input-icon"]} size="lg"/>
                     </div>
+
                     <div className={styles["input-box"]}>
                         <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required/>
                         <FontAwesomeIcon icon={faLock} className={styles["input-icon"]} size="lg"/>
@@ -57,8 +63,20 @@ function Login(){
                     <button type="submit" className={styles["login-btn"]}>Login</button>
 
                     <div className={styles.register}>
-                        <p>Chưa có tài khoản? <a href="/register">Đăng ký</a> </p>
+                        <p>Not yet a member? <a href="/register">Register</a> </p>
                     </div>
+
+                    <div className={styles["divider"]}>
+                        <span>or</span>
+                    </div>
+
+                    <button
+                        type="button"
+                        className={styles["google-btn"]}
+                        onClick={handleGoogleLogin}
+                    >
+                        <FontAwesomeIcon icon={faGoogle} className="mr-2"/> Continue with Google
+                    </button>
 
                 </form>
             </div>

@@ -1,11 +1,13 @@
-require('dotenv').config(); 
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
 
+import connectDB from './src/config/Database.config.js';
 
-const express = require('express');
-const cors = require('cors');
-const session = require('express-session');
-const cookieParser = require('cookie-parser');
-
+import authRoute from './src/routes/Auth.route.js';
+import userRoute from './src/routes/User.route.js';
 
 
 const app = express();
@@ -23,10 +25,11 @@ app.use(session({
 }));
 
 
-const authRoute = require('./src/routes/Auth.route.js');
-const userRoute = require('./src/routes/User.route.js')
+
 app.use('/', authRoute);
 app.use('/user', userRoute);
+
+connectDB();
 
 
 

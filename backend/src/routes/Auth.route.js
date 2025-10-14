@@ -1,12 +1,12 @@
-const express = require('express');
+import express from 'express'
 const router = express.Router();
 
-const authController = require('../controllers/Auth.controller.js');
-const userController = require('../controllers/User.controller.js');
-const refreshTokenController = require('../controllers/Refresh.controller.js');
+import verifyJWT from '../middlewares/VerifyJWT.middleware.js';
 
 
-const verifyJWT = require('../middlewares/VerifyJWT.middleware.js')
+import authController from '../controllers/Auth.controller.js';
+import userController from '../controllers/User.controller.js';
+import refreshTokenController from '../controllers/Refresh.controller.js';
 
 
 router.post('/register', authController.register);
@@ -21,4 +21,5 @@ router.post('/logout', authController.logout);
 
 router.get('/users', userController.getAllUsers);
 
-module.exports = router;
+
+export default router;

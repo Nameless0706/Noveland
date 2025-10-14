@@ -1,5 +1,4 @@
-const User = require('../models/User.model.js');
-
+import User from '../models/User.model.js';
 const userController = {
     getAllUsers : async (req, res) => {
         const results = await User.getAllUsers();
@@ -10,4 +9,4 @@ const userController = {
     },
 }
 
-module.exports = userController;
+export default userController;

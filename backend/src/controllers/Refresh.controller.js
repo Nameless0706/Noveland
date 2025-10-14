@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 const refreshTokenController = {
     refresh: async (req, res) => {
@@ -27,4 +27,4 @@ const refreshTokenController = {
     }
 }
 
-module.exports = refreshTokenController;
+export default refreshTokenController;
