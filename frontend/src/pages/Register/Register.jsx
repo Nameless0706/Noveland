@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faEnvelope} from "@fortawesome/free-solid-svg-icons";
 
 import InputFieldset from "../../components/common/InputField.jsx";
 
@@ -35,6 +35,7 @@ function Register() {
       type: "email",
       label: "Email",
       placeholder: "Email",
+      icon: faEnvelope,
       helperText: "Email must be a valid email address.",
     },
 
@@ -44,7 +45,7 @@ function Register() {
       type: "password",
       label: "Password",
       placeholder: "Password",
-      icon: faLock,
+      togglePassword: true,
       helperText:
         "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character",
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
@@ -56,6 +57,7 @@ function Register() {
       type: "password",
       label: "Confirm Password",
       placeholder: "Confirm Password",
+      icon: faLock,
       helperText: "Passwords don't match, please check again.",
       pattern: formValues.password,
     },
@@ -120,7 +122,7 @@ function Register() {
           <div className="flex justify-center">
             <button
               type="submit"
-              className=" w-full mt-2 font-semibold justify-center items-center backdrop-blur-lg rounded-lg p-2.5 shadow-[0_0_10px_rgba(0,0,0,0.2)] cursor-pointer text-[#624080]"
+              className=" w-full mt-2 font-semibold justify-center items-center backdrop-blur-lg rounded-lg p-2.5 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:shadow-[0_0_10px_rgba(0,0,0,0.4)] cursor-pointer text-[#624080]"
             >
               Register
             </button>

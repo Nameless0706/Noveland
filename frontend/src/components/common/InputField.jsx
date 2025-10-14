@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -6,7 +6,7 @@ function InputFieldset(props) {
   const {
     label,
     icon,
-    type = "text",
+    type,
     togglePassword = false,
     helperText = "",
     invalid = false,
@@ -14,6 +14,9 @@ function InputFieldset(props) {
     customClassName,
     ...inputProps
   } = props;
+
+  const inputRef = useRef(null);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const inputType = togglePassword
@@ -22,18 +25,34 @@ function InputFieldset(props) {
       : "password"
     : type;
 
+  const margin = inputProps.name === "confirmPassword" ? "mb-2" : "-mb-5";
+
+  const handleTogglePassword = (e) => {
+    e.preventDefault();
+
+    const input = inputRef.current;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+
+    setShowPassword((prev) => !prev);
+
+    setTimeout(() => {
+      inputRef.current?.setSelectionRange(start, end); // Restore cursor position
+    }, 0);
+  };
 
   return (
     <>
       <fieldset
-        className={`border-[2px] border-[#ffffff33] rounded-4xl px-[15px] pb-2 mx-2 my-4  required ${
+        className={`border-[2px] border-[#ffffff33] rounded-4xl px-[15px] pb-2 mx-2 my-7 required ${
           customClassName || ""
-        }  ${helperText && touched && invalid ? "border-red-600" : ""}`}
+        }  ${touched && invalid ? "border-red-600" : ""}`}
       >
         <legend className="font-medium text-shadow-violet-600 px-2">
           {label}
         </legend>
         <input
+          ref={inputRef}
           {...inputProps}
           type={inputType}
           className="w-full px-2 pb-0.5 pt-1 outline-none text-gray-700"
@@ -51,15 +70,18 @@ function InputFieldset(props) {
         {togglePassword && (
           <FontAwesomeIcon
             icon={showPassword ? faEyeSlash : faEye}
-            onClick={() => setShowPassword(!showPassword)}
+            onMouseDown={(e) => e.preventDefault()} // Prevent focus loss
+            onClick={handleTogglePassword}
             className="absolute right-15 mt-1.5 mr-2 cursor-pointer"
             size="lg"
           />
         )}
       </fieldset>
 
-      {helperText && touched && invalid && (
-        <div className="text-sm text-red-600 px-5 mt-2.5">{helperText}</div>
+      {touched && invalid && (
+        <div className={`text-[13px] text-red-600 px-5 -mt-4 ${margin}`}>
+          {helperText}
+        </div>
       )}
     </>
   );
