@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faLock, faEnvelope} from "@fortawesome/free-solid-svg-icons";
+import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 import InputFieldset from "../../components/common/InputField.jsx";
+import { Link, useNavigate } from "react-router-dom";
 
 function Register() {
   //State to manage form values
@@ -15,6 +15,8 @@ function Register() {
 
   const [formErrors, setFormErrors] = useState({});
   const [touched, setTouched] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const inputs = [
     {
@@ -22,7 +24,7 @@ function Register() {
       name: "username",
       type: "text",
       label: "Username",
-      placeholder: "Username",
+      placeholder: "Jane Doe",
       icon: faUser,
       helperText:
         "Username should be at least 5-16 characters and not contains special characters.",
@@ -34,9 +36,9 @@ function Register() {
       name: "email",
       type: "email",
       label: "Email",
-      placeholder: "Email",
+      placeholder: "example@gmail.com",
       icon: faEnvelope,
-      helperText: "Email must be a valid email address.",
+      helperText: "Email must contains a single @",
     },
 
     {
@@ -44,8 +46,9 @@ function Register() {
       name: "password",
       type: "password",
       label: "Password",
-      placeholder: "Password",
+      placeholder: "************",
       togglePassword: true,
+      showPassword: { showPassword },
       helperText:
         "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character",
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
@@ -56,27 +59,24 @@ function Register() {
       name: "confirmPassword",
       type: "password",
       label: "Confirm Password",
-      placeholder: "Confirm Password",
+      placeholder: "************",
+      togglePassword: true,
       icon: faLock,
       helperText: "Passwords don't match, please check again.",
       pattern: formValues.password,
     },
   ];
 
-  const handleChange = (e) => {
+  const validateField = (e) => {
     const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-
     // Validation logic
     setFormErrors((prev) => {
       const updated = { ...prev };
-      
+
       if (name === "confirmPassword") {
         updated.confirmPassword = value !== formValues.password;
-        
       } else if (name === "email") {
         updated.email = !e.target.checkValidity();
-
       } else if (e.target.pattern) {
         const regex = new RegExp(e.target.pattern);
         updated[name] = !regex.test(value); // invalid if pattern fails
@@ -86,36 +86,49 @@ function Register() {
     });
   };
 
-  console.log(formErrors);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+    validateField(e);
+  };
+
 
   const handleBlur = (e) => {
-    const { name } = e.target;
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
     setTouched((prev) => ({ ...prev, [name]: true }));
+    validateField(e);
+  };
+
+  const handleFocus = (e) => {
+    const { name } = e.target;
+    setFormErrors((prev) => ({ ...prev, [name]: false }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Form submitted:", formValues);
+    navigate("/");
   };
 
   return (
     <div className="flex justify-center items-center bg-[url('/src/assets/bg.jpg')] bg-cover min-h-screen text-[#5A4B9C] overflow-hidden">
-
       <div className="w-[450px] -mt-4 backdrop-blur-[5px] rounded-[20px] shadow-[0_0_10px_rgba(0,0,0,0.2)] px-10 py-5">
-
         <h1 className="font-bold text-center text-4xl">Register</h1>
 
         <form onSubmit={handleSubmit}>
-
           {inputs.map((input) => (
             <InputFieldset
               key={input.id}
               {...input}
               value={formValues[input.name]}
               onChange={handleChange}
+              onFocus={handleFocus}
               onBlur={handleBlur}
               invalid={formErrors[input.name]}
               touched={touched[input.name]}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
             />
           ))}
 
@@ -129,17 +142,16 @@ function Register() {
           </div>
 
           <div className="flex justify-center mt-4 text-sm">
-            <p> Already a member?  <a href="/login" className="hover:underline font-semibold">Login now</a></p>  
+            <p>
+              {" "}
+              Already a member?{" "}
+              <Link to="/login" className="hover:underline font-semibold">
+                Login now
+              </Link>
+            </p>
           </div>
-
-         
-           
-        
-
         </form>
-
       </div>
-
     </div>
   );
 }

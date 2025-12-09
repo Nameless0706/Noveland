@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
@@ -12,12 +12,12 @@ function InputFieldset(props) {
     invalid = false,
     touched = false,
     customClassName,
+    showPassword,
+    setShowPassword,
     ...inputProps
   } = props;
 
   const inputRef = useRef(null);
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const inputType = togglePassword
     ? showPassword
@@ -41,6 +41,7 @@ function InputFieldset(props) {
     }, 0);
   };
 
+
   return (
     <>
       <fieldset
@@ -55,11 +56,11 @@ function InputFieldset(props) {
           ref={inputRef}
           {...inputProps}
           type={inputType}
-          className="w-full px-2 pb-0.5 pt-1 outline-none text-gray-700"
+          className="text-shadow-violet-600 w-full px-2 pb-0.5 pt-1 outline-none"
           required
         />
 
-        {icon && !togglePassword && (
+        {icon && (
           <FontAwesomeIcon
             icon={icon || ""}
             className={`absolute right-15 mt-1.5 mr-2 `}
@@ -67,7 +68,7 @@ function InputFieldset(props) {
           />
         )}
 
-        {togglePassword && (
+        {togglePassword && inputProps.name === "password" && (
           <FontAwesomeIcon
             icon={showPassword ? faEyeSlash : faEye}
             onMouseDown={(e) => e.preventDefault()} // Prevent focus loss

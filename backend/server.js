@@ -1,7 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
 
 import connectDB from './src/config/Database.config.js';
@@ -13,30 +12,21 @@ import userRoute from './src/routes/User.route.js';
 const app = express();
 const port = 3000;
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",  
+  credentials: true
+})); // for CORS with cookie
+
 app.use(cookieParser());
 app.use(express.json());
 
-app.use(session({
-  secret: 'your_session_secret',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false } // set to true if using HTTPS
-}));
 
 
 
-app.use('/', authRoute);
-app.use('/user', userRoute);
+app.use('/api/client/auth', authRoute);
+app.use('/api/client/user', userRoute);
 
-connectDB();
-
-
-
-
-
-
-
+await connectDB();
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
