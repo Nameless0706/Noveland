@@ -13,3 +13,17 @@ export const login = async (email, password) => {
     throw error;
   }
 };
+
+export const register = async (display_name, email, password) => {
+  try{
+    const response = await clientInstance.post("/auth/register", {
+      display_name,
+      email,
+      password
+    });
+    return response;
+  } catch (error){
+    console.log(error);
+    throw error;
+  }
+}

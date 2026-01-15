@@ -8,12 +8,12 @@ function InputFieldset(props) {
     icon,
     type,
     togglePassword = false,
-    helperText = "",
-    invalid = false,
+    error = "",
     touched = false,
     customClassName,
     showPassword,
     setShowPassword,
+    isLast = false,
     ...inputProps
   } = props;
 
@@ -25,7 +25,7 @@ function InputFieldset(props) {
       : "password"
     : type;
 
-  const margin = inputProps.name === "confirmPassword" ? "mb-2" : "-mb-5";
+  const margin = isLast ? "mb-2" : "-mb-5";
 
   const handleTogglePassword = (e) => {
     e.preventDefault();
@@ -47,7 +47,7 @@ function InputFieldset(props) {
       <fieldset
         className={`border-[2px] border-[#ffffff33] rounded-4xl px-[15px] pb-2 mx-2 my-7 required ${
           customClassName || ""
-        }  ${touched && invalid ? "border-red-600" : ""}`}
+        }  ${touched && error ? "border-red-600" : ""}`}
       >
         <legend className="font-medium text-shadow-violet-600 px-2">
           {label}
@@ -79,9 +79,9 @@ function InputFieldset(props) {
         )}
       </fieldset>
 
-      {touched && invalid && (
+      {touched && error && (
         <div className={`text-[13px] text-red-600 px-5 -mt-4 ${margin}`}>
-          {helperText}
+          {error}
         </div>
       )}
     </>

@@ -2,33 +2,33 @@ import React, { useState } from "react";
 import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 
 import InputFieldset from "../../components/common/InputField.jsx";
+import { useFormValidation } from "../../hooks/useFormValidation.js";
 import { Link, useNavigate } from "react-router-dom";
+import { register } from "../../api/client/authApi.js";
+import { toast } from "react-toastify";
 
 function Register() {
+	
   //State to manage form values
-  const [formValues, setFormValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const { formValues, formErrors, touched, handleChange, handleBlur} = useFormValidation({
+	display_name: "",
+	email: "",
+	password: "",
+	confirmPassword: "",
+});
 
-  const [formErrors, setFormErrors] = useState({});
-  const [touched, setTouched] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const inputs = [
     {
       id: 1,
-      name: "username",
+      name: "display_name",
       type: "text",
-      label: "Username",
+      label: "Display Name",
       placeholder: "Jane Doe",
       icon: faUser,
-      helperText:
-        "Username should be at least 5-16 characters and not contains special characters.",
-      pattern: "^[A-Za-z0-9]{5,16}$",
+      pattern: "^[A-Za-z0-9 ]{5,16}$",
     },
 
     {
@@ -38,7 +38,6 @@ function Register() {
       label: "Email",
       placeholder: "example@gmail.com",
       icon: faEnvelope,
-      helperText: "Email must contains a single @",
     },
 
     {
@@ -48,9 +47,6 @@ function Register() {
       label: "Password",
       placeholder: "************",
       togglePassword: true,
-      showPassword: { showPassword },
-      helperText:
-        "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character",
       pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
     },
 
@@ -62,53 +58,25 @@ function Register() {
       placeholder: "************",
       togglePassword: true,
       icon: faLock,
-      helperText: "Passwords don't match, please check again.",
       pattern: formValues.password,
     },
   ];
 
-  const validateField = (e) => {
-    const { name, value } = e.target;
-    // Validation logic
-    setFormErrors((prev) => {
-      const updated = { ...prev };
-
-      if (name === "confirmPassword") {
-        updated.confirmPassword = value !== formValues.password;
-      } else if (name === "email") {
-        updated.email = !e.target.checkValidity();
-      } else if (e.target.pattern) {
-        const regex = new RegExp(e.target.pattern);
-        updated[name] = !regex.test(value); // invalid if pattern fails
-      }
-
-      return updated;
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-    validateField(e);
-  };
-
-
-  const handleBlur = (e) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({ ...prev, [name]: value }));
-    setTouched((prev) => ({ ...prev, [name]: true }));
-    validateField(e);
-  };
-
-  const handleFocus = (e) => {
-    const { name } = e.target;
-    setFormErrors((prev) => ({ ...prev, [name]: false }));
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log("Form submitted:", formValues);
-    navigate("/");
+    try{
+      const {display_name, email, password} = {...formValues};
+      const data = await register(display_name, email, password);
+      console.log(data);
+      if (data){
+        toast.success("Register successfully");
+        navigate("/login");
+      }
+    }
+    catch (error){
+      console.error(error);
+      toast.error("Register failed");
+    }
   };
 
   return (
@@ -117,18 +85,18 @@ function Register() {
         <h1 className="font-bold text-center text-4xl">Register</h1>
 
         <form onSubmit={handleSubmit}>
-          {inputs.map((input) => (
+          {inputs.map((input, index) => (
             <InputFieldset
               key={input.id}
               {...input}
-              value={formValues[input.name]}
+              value={formValues[input.name] || ""}
               onChange={handleChange}
-              onFocus={handleFocus}
               onBlur={handleBlur}
-              invalid={formErrors[input.name]}
+              error={formErrors[input.name]}
               touched={touched[input.name]}
               showPassword={showPassword}
               setShowPassword={setShowPassword}
+              isLast={index === inputs.length - 1}
             />
           ))}
 

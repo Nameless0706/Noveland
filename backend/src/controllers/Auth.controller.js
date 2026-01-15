@@ -6,24 +6,21 @@ import { sendSuccess, sendError } from "../utils/response.js"
 import User from "../models/User.model.js";
 
 export const register = async (req, res) => {
-  const { username, email, password } = req.body;
+  const { display_name, email, password } = req.body;
 
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(password, salt);
-  const isUsernameExists = await User.findOne({ username });
   const isEmailExists = await User.findOne({ email });
 
-  if (isUsernameExists) {
-    sendError(res, 400, "Username has been taken");
-  } else if (isEmailExists) {
-    sendError(res, 400, "There's already a user with that email");
+  if (isEmailExists) {
+    sendError(res, 400, "Email already exists");
   }
 
   console.log(salt);
   console.log(hashedPassword);
 
   const user = await User.create({
-    username,
+    display_name,
     email,
     password: hashedPassword,
   });
@@ -34,20 +31,16 @@ export const login = async (req, res) => {
   const { email, password, rememberMe } = req.body;
 
   if (!email || !password)
-    sendError(res, 400, "Username or password is required");
+    sendError(res, 400, "Email or password is required");
 
   try {
     const user = await User.findOne({ email });
     console.log(user);
 
-    if (!user) {
-      sendError(res, 400, "Username not found");
-    }
-
     const valid = await bcrypt.compare(password, user.password);
 
-    if (!valid) {
-      sendError(res, 400, "Invalid username or passwordI");
+    if (!user || !valid) {
+      sendError(res, 400, "Invalid email or password");
     }
 
     // Create JWTS
@@ -103,4 +96,29 @@ export const logout = (req, res) => {
   res.clearCookie("refreshToken");
   return res.status(200).json({ message: "Logged out" });
 };
+
+export const getRefreshToken = async (req, res) => {
+  const token = req.cookies.refreshToken;
+
+  console.log(token);
+
+  if (!token) return res.status(401).json({ message: "Refresh token missing" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+
+    const accessToken = jwt.sign(
+      { user_id: decoded.user_id },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    return res.json({ accessToken });
+  } catch (err) {
+    return res
+      .status(403)
+      .json({ message: "Invalid or expired refresh token" });
+  }
+};
+
 

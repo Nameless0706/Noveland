@@ -69,7 +69,7 @@ function Login() {
               {" "}
               <input type="checkbox" /> Remember me
             </label>
-            <Link to="#">Forgot password?</Link>
+            <Link to="/forgot-password">Forgot password?</Link>
           </div>
 
           <button type="submit" className={styles["login-btn"]}>
@@ -91,8 +91,7 @@ function Login() {
             className={styles["google-btn"]}
             onClick={handleGoogleLogin}
           >
-            <FontAwesomeIcon icon={faGoogle} className="mr-2" /> Continue with
-            Google
+            <FontAwesomeIcon icon={faGoogle} className="mr-2" /> Continue with Google
           </button>
         </form>
       </div>

@@ -4,8 +4,7 @@ const router = express.Router();
 import verifyJWT from '../middlewares/VerifyJWT.middleware.js';
 
 
-import { login, register, logout } from '../controllers/Auth.controller.js';
-import {getRefreshToken} from '../controllers/Refresh.controller.js';
+import { login, register, logout, getRefreshToken } from '../controllers/Auth.controller.js';
 
 
 router.post('/register', register);

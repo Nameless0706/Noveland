@@ -7,6 +7,7 @@ import connectDB from './src/config/Database.config.js';
 
 import authRoute from './src/routes/Auth.route.js';
 import userRoute from './src/routes/User.route.js';
+import { sendWelcomeEmail } from './src/utils/sendMail.js';
 
 
 const app = express();
@@ -26,8 +27,9 @@ app.use(express.json());
 app.use('/api/client/auth', authRoute);
 app.use('/api/client/user', userRoute);
 
-await connectDB();
 
+
+await connectDB();
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
