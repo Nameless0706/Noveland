@@ -4,18 +4,18 @@ import { faUser, faLock, faEnvelope } from "@fortawesome/free-solid-svg-icons";
 import InputFieldset from "../../components/common/InputField.jsx";
 import { useFormValidation } from "../../hooks/useFormValidation.js";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../../api/client/authApi.js";
+import { register } from "../../api/authApi.js";
 import { toast } from "react-toastify";
 
 function Register() {
-	
   //State to manage form values
-  const { formValues, formErrors, touched, handleChange, handleBlur} = useFormValidation({
-	display_name: "",
-	email: "",
-	password: "",
-	confirmPassword: "",
-});
+  const { formValues, formErrors, touched, handleChange, handleBlur } =
+    useFormValidation({
+      display_name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -62,18 +62,19 @@ function Register() {
     },
   ];
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
-      const {display_name, email, password} = {...formValues};
+    try {
+      const { display_name, email, password } = { ...formValues };
       const data = await register(display_name, email, password);
       console.log(data);
-      if (data){
+      if (data) {
         toast.success("Register successfully");
-        navigate("/login");
+        navigate("/verify", {
+          state: { from: "register" },
+        });
       }
-    }
-    catch (error){
+    } catch (error) {
       console.error(error);
       toast.error("Register failed");
     }

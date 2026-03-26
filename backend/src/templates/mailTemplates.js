@@ -1,4 +1,4 @@
-export const verifyEmail = `<!DOCTYPE html>
+export const verifyEmail = (display_name, otp) =>  `<!DOCTYPE html>
 <html lang="en">
   <body
     style="
@@ -43,7 +43,7 @@ export const verifyEmail = `<!DOCTYPE html>
       <!-- CONTENT -->
       <div style="padding-left: 30px; color: hsl(217, 33%, 17%)">
         <p style="font-size: 1.2rem; margin: 0; margin-top: 10px">
-          Hello {display_name},
+          Hello ${display_name},
         </p>
         <p
           style="font-size: 1.1rem; margin: 0; margin: 15px 0px; color: #334155"
@@ -64,7 +64,7 @@ export const verifyEmail = `<!DOCTYPE html>
         "
       >
         <h1 style="margin: 8px 0px; color: #2563eb; letter-spacing: 8px; font-size: 2.2rem;">
-          123456
+          ${otp}
         </h1>
       </div>
 
@@ -81,7 +81,7 @@ export const verifyEmail = `<!DOCTYPE html>
         "
       >
         <p style="margin: 4px 0">
-          This OTP is valid for <strong>5 minutes</strong>.
+          This OTP is valid for <strong>10 minutes</strong>.
         </p>
         <p style="margin: 4px 0">
           If you did not request this, please ignore this message.

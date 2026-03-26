@@ -1,29 +1,36 @@
-import React from "react";
-import { faEnvelope } from "@fortawesome/free-solid-svg-icons";
+import React, { useEffect } from "react";
 
 import InputFieldset from "../../components/common/InputField.jsx";
-import { Link } from "react-router-dom";
-import { forgotPassword } from "../../api/authApi.js";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { register } from "../../api/authApi.js";
 import { toast } from "react-toastify";
-import { useFormValidation } from "../../hooks/useFormValidation.js";
 
-function ForgotPassword() {
-  const { formValues, formErrors, touched, handleChange, handleBlur } =
-    useFormValidation({
-      email: "",
-    });
+function VerifyOtp() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Only user from register can access this verify link
+
+
+  // useEffect(() => {
+  //   if (!location.state?.from) {
+  //     navigate("/login");
+  //   }
+  // }); 
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const data = await forgotPassword(formValues.email);
+      const data = await register();
       console.log(data);
       if (data) {
-        toast.success("OTP has been sent to your mail");
+        toast.success("Register successfully");
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.message);
+      toast.error("Send OTP failed");
     }
   };
 
@@ -33,20 +40,12 @@ function ForgotPassword() {
         <h1 className="font-bold text-center text-3xl">Forgot Password</h1>
 
         <form onSubmit={handleSubmit}>
-            <InputFieldset
-              name="email"
-              type="email"
-              helperText= "Email must contains a single @"
-              value={formValues.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={formErrors.email}
-              touched={touched.email}
-              icon={faEnvelope}
-              label="Email"
-              placeholder="example@gmail.com"
-              isLast={true}
-            />
+
+
+          
+          
+          <div className="border h-20 w-10"></div>
+
 
           <div className="flex justify-center">
             <button
@@ -69,4 +68,4 @@ function ForgotPassword() {
     </div>
   );
 }
-export default ForgotPassword;
+export default VerifyOtp;
