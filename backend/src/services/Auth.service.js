@@ -30,6 +30,12 @@ export const registerService = async ({ display_name, email, password }) => {
   return user;
 };
 
+export const sendVerifyOtpService = async ({ userId }) => {
+  const user = await User.findById(userId);
+  
+  
+};
+
 export const loginService = async ({ email, password, rememberMe }) => {
   if (!email || !password) {
     throw { status: 400, message: "Email or password is required" };
@@ -86,7 +92,7 @@ export const logoutService = async (userId) => {
   await RefreshToken.deleteOne({ userId });
 };
 
-export const  forgotPasswordService = async (email, baseURL) => {
+export const forgotPasswordService = async (email, baseURL) => {
   if (!email) {
     throw { status: 400, message: "Email is required" };
   }
@@ -99,9 +105,8 @@ export const  forgotPasswordService = async (email, baseURL) => {
   // Create reset token and save to db
   const resetToken = user.createResetPasswordToken();
 
-
   console.log(resetToken);
-  await user.save({validateBeforeSave: false}); //skip fields constraint check
+  await user.save({ validateBeforeSave: false }); //skip fields constraint check
 
   // Send mail with token to user (check in mailtrap sandbox plz)
   const resetURL = baseURL + `/api/v1/users/resetPassword/${resetToken}`;

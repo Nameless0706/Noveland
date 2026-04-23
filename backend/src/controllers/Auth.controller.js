@@ -6,7 +6,7 @@ import {
   loginService,
   logoutService,
   refreshAccessTokenService,
-  forgotPasswordService
+  forgotPasswordService,
 } from "../services/Auth.service.js";
 
 export const register = async (req, res) => {
@@ -14,6 +14,32 @@ export const register = async (req, res) => {
     const user = await registerService(req.body);
 
     return successResponse(res, 201, "Register Successfully", user);
+  } catch (error) {
+    return errorResponse(
+      res,
+      error.status || 500,
+      error.message || "Server error",
+    );
+  }
+};
+
+export const sendVerifyOtp = async (req, res) => {
+  try {
+    await sendVerifyOtpService(req.body);
+    return successResponse(res, 201, "Otp send to email", user);
+  } catch (error) {
+    return errorResponse(
+      res,
+      error.status || 500,
+      error.message || "Server error",
+    );
+  }
+};
+
+export const verifyOtp = async (req, res) => {
+  try {
+    await sendVerifyOtpService(req.body);
+    return successResponse(res, 201, "Otp send to email", user);
   } catch (error) {
     return errorResponse(
       res,
@@ -88,7 +114,6 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-
 export const getNewAccessToken = async (req, res) => {
   try {
     const token = req.cookies.refreshToken;
@@ -102,8 +127,7 @@ export const getNewAccessToken = async (req, res) => {
     return errorResponse(
       res,
       error.status || 403,
-      error.message || "Invalid or expired refresh token"
+      error.message || "Invalid or expired refresh token",
     );
   }
 };
-

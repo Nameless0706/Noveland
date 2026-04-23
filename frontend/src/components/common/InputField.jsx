@@ -49,14 +49,14 @@ function InputFieldset(props) {
           customClassName || ""
         }  ${touched && error ? "border-red-600" : ""}`}
       >
-        <legend className="font-medium text-shadow-violet-600 px-2">
+        <legend className="text-white/85 px-2">
           {label}
         </legend>
         <input
           ref={inputRef}
           {...inputProps}
           type={inputType}
-          className="text-shadow-violet-600 w-full px-2 pb-0.5 pt-1 outline-none"
+          className="text-white w-full px-2 pb-0.5 pt-1 outline-none"
           required
         />
 

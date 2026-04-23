@@ -28,7 +28,6 @@ function Register() {
       label: "Display Name",
       placeholder: "Jane Doe",
       icon: faUser,
-      pattern: "^[A-Za-z0-9 ]{5,16}$",
     },
 
     {
@@ -47,7 +46,6 @@ function Register() {
       label: "Password",
       placeholder: "************",
       togglePassword: true,
-      pattern: `^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,20}$`,
     },
 
     {
@@ -58,7 +56,6 @@ function Register() {
       placeholder: "************",
       togglePassword: true,
       icon: faLock,
-      pattern: formValues.password,
     },
   ];
 
@@ -72,6 +69,7 @@ function Register() {
         toast.success("Register successfully");
         navigate("/verify", {
           state: { from: "register" },
+          email: formValues.email
         });
       }
     } catch (error) {
@@ -80,10 +78,14 @@ function Register() {
     }
   };
 
+  const isFormValid =
+    Object.values(formErrors).every((err) => !err) &&
+    Object.values(formValues).every((val) => val.trim() !== "");
+
   return (
-    <div className="flex justify-center items-center bg-[url('/src/assets/bg.jpg')] bg-cover min-h-screen text-[#5A4B9C] overflow-hidden">
-      <div className="w-[450px] -mt-4 backdrop-blur-[5px] rounded-[20px] shadow-[0_0_10px_rgba(0,0,0,0.2)] px-10 py-5">
-        <h1 className="font-bold text-center text-4xl">Register</h1>
+    <div className="flex justify-center items-center bg-[url('/src/assets/astronaut-nord.png')] bg-cover min-h-screen text-white font-light overflow-hidden">
+      <div className="w-[450px] -mt-4 backdrop-blur-[10px] rounded-[20px] shadow-[0_0_10px_rgba(0,0,0,0.2)] px-10 py-5">
+        <h1 className="font-medium text-center text-4xl">Register</h1>
 
         <form onSubmit={handleSubmit}>
           {inputs.map((input, index) => (
@@ -104,7 +106,13 @@ function Register() {
           <div className="flex justify-center">
             <button
               type="submit"
-              className=" w-full mt-2 font-semibold justify-center items-center backdrop-blur-lg rounded-lg p-2.5 shadow-[0_0_10px_rgba(0,0,0,0.2)] hover:shadow-[0_0_10px_rgba(0,0,0,0.4)] cursor-pointer text-[#624080]"
+              disabled={!isFormValid}
+              className={`w-full mt-2 font-medium rounded-4xl p-2.5 shadow-[0_0_10px_rgba(0,0,0,0.2)]
+                        ${
+                          isFormValid
+                            ? "bg-[#262c3c] hover:shadow-[0_0_10px_rgba(0,0,0,0.4)] cursor-pointer"
+                            : "bg-gray-400 cursor-not-allowed opacity-70"
+                        }`}
             >
               Register
             </button>
